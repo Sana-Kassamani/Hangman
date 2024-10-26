@@ -1,4 +1,5 @@
 //Choose a random word as a secret word
+//O(1)
 function ChooseWord() {
   var words = [
     "screen",
@@ -39,7 +40,7 @@ function displayWord(guessed_word) {
 }
 
 //add event listener to each letter when pressed to check if included in secret word
-//O(1) constant nb of letters in html 27
+//O(1) constant nb of letters in html 27, disregarding comeback func in event listener (happens only on event)
 function translateLetterPress(secret_word, guessed_word) {
   var letters = document.querySelectorAll(".letter");
   for (var i = 0; i < letters.length; i++) {
@@ -47,7 +48,7 @@ function translateLetterPress(secret_word, guessed_word) {
       var letter_pressed = this.innerHTML;
       this.style.display = "none";
       checkLetter(letter_pressed, secret_word, guessed_word);
-      //not the best approach with timeout, can be solved with Promise
+      //not the best approach with timeout, can be solved with Promise or avoid alerts
       setTimeout(() => {
         checkIfGuessed(guessed_word, secret_word);
         checkGameOver(failed_attempts, secret_word);
@@ -57,7 +58,7 @@ function translateLetterPress(secret_word, guessed_word) {
 }
 
 //check if pressed letter is included in secret word
-//O(n), n being length of secret-word (includes method)
+//O(n), n being length of secret-word ("includes" method)
 function checkLetter(letter_pressed, secret_word, guessed_word) {
   secret_word = secret_word.toUpperCase();
   if (secret_word.includes(letter_pressed)) {
@@ -69,7 +70,7 @@ function checkLetter(letter_pressed, secret_word, guessed_word) {
 }
 
 // Change guessed word if a letter is guessed
-// O(n), n being length of guessed-word as array== length of secret-word as string
+// O(n), n being length of guessed-word as array == length of secret-word as string
 function changeGuessedWord(letter_pressed, secret_word, guessed_word) {
   for (var i = 0; i < guessed_word.length; i++) {
     if (secret_word[i] === letter_pressed) guessed_word[i] = letter_pressed;
@@ -95,4 +96,5 @@ function play() {
   translateLetterPress(secret_word, guessed_word);
 }
 
+//Start Game
 play();
