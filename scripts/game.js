@@ -1,6 +1,15 @@
 //Choose a random word as a secret word
 function ChooseWord() {
-  var word = "transform";
+  var words = [
+    "screen",
+    "programming",
+    "application",
+    "keyboard",
+    "javascript",
+    "gaming",
+    "network",
+  ];
+  var word = words[Math.floor(Math.random() * words.length)];
   return word;
 }
 
@@ -18,6 +27,7 @@ function generateDashes(secret_word) {
 // O(n), n being length of guessed word (join method)
 function displayWord(guessed_word) {
   var answer_section = document.getElementById("answer-section");
+
   var answer;
   if (!answer_section.hasChildNodes()) {
     answer = document.createElement("span");
@@ -32,12 +42,16 @@ function displayWord(guessed_word) {
 //O(1) constant nb of letters in html 27
 function translateLetterPress(secret_word, guessed_word) {
   var letters = document.querySelectorAll(".letter");
-  console.log(letters);
   for (var i = 0; i < letters.length; i++) {
     letters[i].addEventListener("click", function () {
       var letter_pressed = this.innerHTML;
       this.style.display = "none";
       checkLetter(letter_pressed, secret_word, guessed_word);
+      //not the best approach with timeout, can be solved with Promise
+      setTimeout(() => {
+        checkIfGuessed(guessed_word, secret_word);
+        checkGameOver(failed_attempts, secret_word);
+      }, 100);
     });
   }
 }
@@ -63,10 +77,18 @@ function changeGuessedWord(letter_pressed, secret_word, guessed_word) {
   return guessed_word;
 }
 
+// check if word has been guessed
+// O(n), n being length of guessed word (join method)
+function checkIfGuessed(guessed_word, secret_word) {
+  if (guessed_word.join("") === secret_word.toUpperCase()) {
+    alert("You Won!!!");
+    window.location.reload();
+  }
+}
+
 // main function to play
 // O(n), n being  length of secret word ... sum of all its functions complexities
 function play() {
-  var failed_attempts = 0;
   var secret_word = ChooseWord();
   var guessed_word = generateDashes(secret_word);
   displayWord(guessed_word);
