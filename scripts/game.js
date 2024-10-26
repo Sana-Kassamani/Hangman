@@ -1,16 +1,21 @@
+//Choose a random word as a secret word
 function ChooseWord() {
   var word = "transform";
   return word;
 }
+
+//Generate dashes as per the number of letters in secret word
+//O(n), n being length of secret-word
 function generateDashes(secret_word) {
   var dashes = [];
   for (var i = 0; i < secret_word.length; i++) {
     dashes.push("_");
   }
-
   return dashes;
 }
 
+// display secret word with guessed chars so far (DOM)
+// O(n), n being length of guessed word (join method)
 function displayWord(guessed_word) {
   var answer_section = document.getElementById("answer-section");
   var answer;
@@ -23,27 +28,34 @@ function displayWord(guessed_word) {
   answer.innerHTML = guessed_word.join(" ");
 }
 
-function translateLetterPress(letter_pressed, secret_word, guessed_word) {
+//add event listener to each letter when pressed to check if included in secret word
+//O(1) constant nb of letters in html 27
+function translateLetterPress(secret_word, guessed_word) {
   var letters = document.querySelectorAll(".letter");
   console.log(letters);
   for (var i = 0; i < letters.length; i++) {
     letters[i].addEventListener("click", function () {
-      letter_pressed = this.innerHTML;
+      var letter_pressed = this.innerHTML;
+      this.style.display = "none";
       checkLetter(letter_pressed, secret_word, guessed_word);
     });
   }
 }
 
+//check if pressed letter is included in secret word
+//O(n), n being length of secret-word (includes method)
 function checkLetter(letter_pressed, secret_word, guessed_word) {
   secret_word = secret_word.toUpperCase();
   if (secret_word.includes(letter_pressed)) {
     guessed_word = changeGuessedWord(letter_pressed, secret_word, guessed_word);
     displayWord(guessed_word);
   } else {
-    console.log("wrong letter");
+    hang();
   }
 }
 
+// Change guessed word if a letter is guessed
+// O(n), n being length of guessed-word as array== length of secret-word as string
 function changeGuessedWord(letter_pressed, secret_word, guessed_word) {
   for (var i = 0; i < guessed_word.length; i++) {
     if (secret_word[i] === letter_pressed) guessed_word[i] = letter_pressed;
@@ -51,12 +63,14 @@ function changeGuessedWord(letter_pressed, secret_word, guessed_word) {
   return guessed_word;
 }
 
+// main function to play
+// O(n), n being  length of secret word ... sum of all its functions complexities
 function play() {
+  var failed_attempts = 0;
   var secret_word = ChooseWord();
-  var letter_pressed = "";
   var guessed_word = generateDashes(secret_word);
   displayWord(guessed_word);
-  translateLetterPress(letter_pressed, secret_word, guessed_word);
+  translateLetterPress(secret_word, guessed_word);
 }
 
 play();
